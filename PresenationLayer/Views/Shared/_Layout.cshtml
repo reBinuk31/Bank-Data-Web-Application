@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Bank WebApp</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-light bg-light border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">Bank WebApp</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto mb-2 mb-sm-0">
+                        @{
+                            var role = TempData["UserRole"] as string; // stored after login
+                        }
+
+                        @if (!string.IsNullOrEmpty(role))
+                        {
+                            @* ====== Admin Links ====== *@
+                            @if (role == "Admin")
+                            {
+                                <li class="nav-item"><a class="nav-link" asp-controller="Profile" asp-action="ProfileView">Admin Profile</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="UserManagement" asp-action="UserManagementDefaultView">User Management</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="TransactionManagement" asp-action="TransactionDefaultView">Transaction Management</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="SecurityLogs">Security Logs</a></li>
+                            }
+                            @* ====== User Links ====== *@
+                            else if (role == "User")
+                            {
+                                <li class="nav-item"><a class="nav-link" asp-controller="Profile" asp-action="ProfileView">Profile</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="AccountSummary" asp-action="AccountView">Account Summary</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="TransactionHistory" asp-action="TransactionDefaultView">Transaction History</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="MoneyTransfer" asp-action="MoneyTransferDefaultView">Money Transfer</a></li>
+                            }
+
+                            @* ====== Logout ====== *@
+                            <li class="nav-item">
+                                <a class="nav-link text-danger" asp-controller="Login" asp-action="Logout">Logout</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="Index">Login</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted text-center mt-4">
+        <div class="container">
+            &copy; 2025 - Bank WebApp
+        </div>
+    </footer>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,23 @@
+﻿@model DCAssignment2.Models.User
+
+<div class="container mt-4">
+    <h3>✏️ Edit User Details</h3>
+    <hr />
+
+    <form asp-action="EditUser" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label class="form-label">Full Name</label>
+            <input asp-for="Username" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input asp-for="Email" type="email" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a asp-action="UserManagementDefaultView" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>

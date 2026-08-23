@@ -1,0 +1,32 @@
+﻿@model DCAssignment2.Models.User
+
+@{
+    ViewData["Title"] = "Transaction Error";
+}
+
+<div class="container mt-4">
+    <h2>Transaction History</h2>
+
+    <div class="alert alert-danger">
+        <strong>Error:</strong> Unable to load transactions. Please try again later.
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="accountSelect">Select Account:</label>
+        <select id="accountSelect" class="form-control">
+            @foreach (var acc in Model.Accounts)
+            {
+                <option value="@acc.Id">
+                    @acc.AccountNumber (@acc.AccountType)
+                </option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group mb-3">
+        <label>Filter by Date Range:</label>
+        <input type="date" id="fromDate" class="form-control d-inline-block w-auto" />
+        <input type="date" id="toDate" class="form-control d-inline-block w-auto" />
+        <button class="btn btn-primary">Search</button>
+    </div>
+</div>

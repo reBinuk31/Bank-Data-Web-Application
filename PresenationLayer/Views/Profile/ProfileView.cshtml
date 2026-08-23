@@ -1,0 +1,20 @@
+﻿@model DCAssignment2.Models.User
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<div id="ProfileContainer">
+    <h2>@(Model.isAdmin ? "Admin Profile" : "User Profile")</h2>
+
+    <img src="@Url.Content(Model.Icon ?? "~/images/default-profile.png")"
+         alt="Profile Picture" width="120" height="120" />
+
+    <p><strong>Username:</strong> @Model.Username</p>
+    <p><strong>Email:</strong> @Model.Email</p>
+    <p><strong>Address:</strong> @Model.Address</p>
+    <p><strong>Phone:</strong> @Model.PhoneNo</p>
+
+    <div style="margin-top:10px;">
+        <a asp-action="Edit" asp-controller="Profile" class="btn">Edit Profile</a>
+    </div>
+</div>

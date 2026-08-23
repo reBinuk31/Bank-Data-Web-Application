@@ -1,0 +1,45 @@
+﻿@model DCAssignment2.Models.User
+
+@{
+    ViewData["Title"] = "Create User";
+}
+
+<div class="container mt-4">
+    <h3>➕ Create New User</h3>
+    <hr />
+
+    <form asp-action="CreateUser" method="post">
+        <!-- Username -->
+        <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input asp-for="Username" class="form-control" required />
+        </div>
+
+        <!-- Email -->
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input asp-for="Email" type="email" class="form-control" required />
+        </div>
+
+        <!-- Address -->
+        <div class="mb-3">
+            <label class="form-label">Address</label>
+            <input asp-for="Address" class="form-control" />
+        </div>
+
+        <!-- Phone Number -->
+        <div class="mb-3">
+            <label class="form-label">Phone Number</label>
+            <input asp-for="PhoneNo" class="form-control" />
+        </div>
+
+        <!-- Password -->
+        <div class="mb-3">
+            <label class="form-label">Initial Password</label>
+            <input asp-for="Password" type="password" class="form-control" required />
+        </div>
+
+        <button type="submit" class="btn btn-success">Create</button>
+        <a asp-action="UserManagementDefaultView" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>

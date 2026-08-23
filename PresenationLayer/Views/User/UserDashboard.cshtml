@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "User Dashboard";
+}
+
+<h2>Welcome, @Context.Request.Cookies["SessionID"]!</h2>
+<p>This is your user dashboard.</p>
+
+<div class="list-group">
+    <a asp-controller="Profile" asp-action="ProfileView" class="list-group-item list-group-item-action">Profile</a>
+    <a asp-controller="AccountSummary" asp-action="AccountView" class="list-group-item list-group-item-action">Account Summary</a>
+    <a asp-controller="TransactionHistory" asp-action="TransactionDefaultView" class="list-group-item list-group-item-action">Transaction History</a>
+    <a asp-controller="MoneyTransfer" asp-action="MoneyTransferDefaultView" class="list-group-item list-group-item-action">Money Transfer</a>
+</div>

@@ -1,0 +1,58 @@
+﻿@model DCAssignment2.Models.User
+@{
+    ViewData["Title"] = "Edit Profile";
+}
+
+<div id="EditProfileContainer">
+    <h2>Edit @(Model.isAdmin ? "Admin" : "User") Profile</h2>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+
+    <form method="post" asp-action="SaveEdit" asp-controller="Profile">
+
+        <div style="margin-bottom: 15px;">
+            <label>Username</label>
+            <input type="text" name="Username" value="@Model.Username" />
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label>Email</label>
+            <input type="email" name="Email" value="@Model.Email" />
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label>Address</label>
+            <input type="text" name="Address" value="@Model.Address" />
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label>Phone Number</label>
+            <input type="text" name="PhoneNo" value="@Model.PhoneNo" />
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <h4>Change Password</h4>
+            <label>Current Password</label>
+            <input type="password" name="CurrentPassword" />    
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label>New Password</label>
+            <input type="password" name="NewPassword" />
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label>Confirm Password</label>
+            <input type="password" name="ConfirmPassword" />
+        </div>
+
+        <div style="margin-top:10px;">
+            <button type="submit" class="btn">Save Changes</button>
+            <a asp-action="ProfileView" asp-controller="Profile" class="btn">Cancel</a>
+        </div>
+
+    </form>
+</div>

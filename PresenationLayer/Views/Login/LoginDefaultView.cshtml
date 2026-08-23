@@ -1,0 +1,32 @@
+﻿<div id="LoginForm">
+    <h3>Please Log In</h3>
+    <input type="text" id="SName" name="SUname" placeholder="User Name" />
+    <input type="password" id="SPass" name="SPassword" placeholder="Password" />
+    <button type="button" id="SubmitButton" onclick="performAuth()">Login</button>
+    <p id="LoginMessage" style="color:red;"></p>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function performAuth() {
+        const username = $('#SName').val();
+        const password = $('#SPass').val();
+
+        $.ajax({
+            url: '/auth',
+            type: 'POST',
+            data: { Username: username, Password: password },
+            success: function (data) {
+                if (data.login) {
+                    // 🔁 Go to dashboard
+                    window.location.href = data.redirect;
+                } else {
+                    $('#LoginMessage').text('Invalid username or password.');
+                }
+            },
+            error: function () {
+                $('#LoginMessage').text('Server error — please try again.');
+            }
+        });
+    }
+</script>

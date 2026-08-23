@@ -1,0 +1,23 @@
+﻿@model IEnumerable<DCAssignment2.Models.Transaction>
+
+@{
+    ViewData["Title"] = "Transaction Error";
+}
+
+<div class="container mt-4">
+    <h2>⚠️ Transaction Error</h2>
+
+    <div class="alert alert-danger">
+        <strong>Error:</strong> @(ViewBag.ErrorMessage ?? "Failed to load transactions. Please try again.")
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(ViewBag.ErrorDetails as string))
+    {
+        <div class="alert alert-warning">@Html.Raw(ViewBag.ErrorDetails)</div>
+    }
+
+    <div class="mt-3">
+        <a asp-action="TransactionDefaultView" class="btn btn-primary">Back to Transactions</a>
+        <a asp-action="Index" asp-controller="Dashboard" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>

@@ -1,0 +1,253 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using DCAssignment2.Data;
+using DCAssignment2.Models;
+
+namespace DCAssignment2.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AccountsController : ControllerBase
+    {
+        private readonly DBManager _context;
+
+        public AccountsController(DBManager context)
+        {
+            _context = context;
+        }
+
+        // GET: api/Accounts
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Account>>> GetAccounts()
+        {
+            if (_context.Accounts == null)
+            {
+                return NotFound();
+            }
+            // ✅ FIXED: Include user to show account-user relationships
+            return await _context.Accounts
+                .Include(a => a.User)
+                .ToListAsync();
+        }
+
+        // GET: api/Accounts/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Account>> GetAccount(int id)
+        {
+            if (_context.Accounts == null)
+            {
+                return NotFound();
+            }
+
+            // ✅ FIXED: Include user for specific account
+            var account = await _context.Accounts
+                .Include(a => a.User)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (account == null)
+            {
+                return NotFound();
+            }
+
+            return account;
+        }
+
+        // PUT: api/Accounts/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutAccount(int id, Account account)
+        {
+            if (id != account.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(account).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!AccountExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // POST: api/Accounts
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Account>> PostAccount([FromBody] Account account)
+        {
+            if (_context.Accounts == null)
+            {
+                return Problem("Entity set 'DBManager.Accounts' is null.");
+            }
+
+            // 1. Validate User exists
+            var userExists = await _context.Users.AnyAsync(u => u.Id == account.UserId);
+            if (!userExists)
+            {
+                return BadRequest("User does not exist");
+            }
+
+
+
+            // 2. Validate AccountNumber is unique
+            var accountNumberExists = await _context.Accounts
+                .AnyAsync(a => a.AccountNumber == account.AccountNumber);
+            if (accountNumberExists)
+            {
+                return BadRequest("Account number already exists");
+            }
+
+            // 3. Validate business rules
+            if (account.Balance < 0)
+            {
+                return BadRequest("Balance cannot be negative");
+            }
+
+            if (string.IsNullOrWhiteSpace(account.AccountType) ||
+                (account.AccountType != "Savings" && account.AccountType != "Checking"))
+            {
+                return BadRequest("Account type must be 'Savings' or 'Checking'");
+            }
+
+            // 4. Set default values if needed
+            if (string.IsNullOrWhiteSpace(account.AccountNumber))
+            {
+                account.AccountNumber = GenerateAccountNumber();
+            }
+
+            // 5. Add to database
+            _context.Accounts.Add(account);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetAccount", new { id = account.Id }, account);
+        }
+
+        private string GenerateAccountNumber()
+        {
+            // Implement your account number generation logic
+            return $"{DateTime.Now:yyyyMMdd}-{new Random().Next(1000, 9999)}";
+        }
+
+        // DELETE: api/Accounts/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAccount(int id)
+        {
+            if (_context.Accounts == null)
+            {
+                return NotFound();
+            }
+            var account = await _context.Accounts.FindAsync(id);
+            if (account == null)
+            {
+                return NotFound();
+            }
+
+            _context.Accounts.Remove(account);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        // ✅ ADDED: Get accounts by user ID
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult<IEnumerable<Account>>> GetAccountsByUser(int userId)
+        {
+            if (_context.Accounts == null)
+            {
+                return NotFound();
+            }
+
+            var accounts = await _context.Accounts
+                .Where(a => a.UserId == userId)
+                .Include(a => a.User)
+                .ToListAsync();
+
+            if (!accounts.Any())
+            {
+                return NotFound($"No accounts found for user ID {userId}");
+            }
+
+            return accounts;
+        }
+
+        // ✅ ADDED: Get account by account number
+        [HttpGet("number/{accountNumber}")]
+        public async Task<ActionResult<Account>> GetAccountByNumber(string accountNumber)
+        {
+            if (_context.Accounts == null)
+            {
+                return NotFound();
+            }
+
+            var account = await _context.Accounts
+                .Include(a => a.User)
+                .FirstOrDefaultAsync(a => a.AccountNumber == accountNumber);
+
+            if (account == null)
+            {
+                return NotFound($"Account with number {accountNumber} not found");
+            }
+
+            return account;
+        }
+
+        // ✅ ADDED: Test endpoint to verify account relationships
+        [HttpGet("test-relationships")]
+        public async Task<IActionResult> TestAccountRelationships()
+        {
+            try
+            {
+                var accountsWithUsers = await _context.Accounts
+                    .Include(a => a.User)
+                    .Select(a => new
+                    {
+                        AccountId = a.Id,
+                        AccountNumber = a.AccountNumber,
+                        AccountType = a.AccountType,
+                        Balance = a.Balance,
+                        UserId = a.UserId,
+                        Username = a.User.Username,
+                        UserEmail = a.User.Email
+                    })
+                    .Take(10) // Limit to first 10 for readability
+                    .ToListAsync();
+
+                return Ok(new
+                {
+                    Message = "Account relationship test successful",
+                    Accounts = accountsWithUsers,
+                    TotalAccounts = await _context.Accounts.CountAsync(),
+                    AccountsWithUsers = await _context.Accounts.CountAsync(a => a.User != null),
+                    AccountsWithoutUsers = await _context.Accounts.CountAsync(a => a.User == null)
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Error = ex.Message });
+            }
+        }
+
+        private bool AccountExists(int id)
+        {
+            return (_context.Accounts?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+    }
+}

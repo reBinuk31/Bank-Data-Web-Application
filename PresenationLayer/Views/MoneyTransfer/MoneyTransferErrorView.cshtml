@@ -1,0 +1,24 @@
+﻿@model DCAssignment2.Models.User
+
+@{
+    ViewData["Title"] = "Transfer Error";
+}
+
+<div class="container mt-4">
+    <h2>Transfer Failed</h2>
+
+    <div class="alert alert-danger">
+        <strong>Error:</strong> @(ViewBag.ErrorMessage ?? "Transfer not successful. Please try again.")
+    </div>
+
+    <!-- Show detailed error types if controller provides them -->
+    @if (!string.IsNullOrWhiteSpace(ViewBag.ErrorDetails as string))
+    {
+        <div class="alert alert-warning">@Html.Raw(ViewBag.ErrorDetails)</div>
+    }
+
+    <div class="mt-3">
+        <a asp-action="Default" asp-controller="Money" class="btn btn-primary">Try again</a>
+        <a asp-action="Index" asp-controller="Dashboard" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>

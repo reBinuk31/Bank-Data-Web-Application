@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<h2>Welcome, Admin @Context.Request.Cookies["SessionID"]!</h2>
+<p>This is your admin dashboard.</p>
+
+<div class="list-group">
+    <a asp-controller="Profile" asp-action="ProfileView" class="list-group-item list-group-item-action">Admin Profile</a>
+    <a asp-controller="UserManagement" asp-action="UserManagementDefaultView" class="list-group-item list-group-item-action">User Management</a>
+    <a asp-controller="TransactionManagement" asp-action="TransactionDefaultView" class="list-group-item list-group-item-action">Transaction Management</a>
+    <a asp-controller="Admin" asp-action="SecurityLogs" class="list-group-item list-group-item-action">Security Logs</a>
+</div>
