@@ -100,12 +100,3 @@ The application follows an MVC-based architecture, separating application respon
 ## Disclaimer
 
 This project is intended for educational and demonstration purposes. It is not a production banking platform and should not be used to process real financial transactions.
-
-## Author
-
-**Binuk Perera**
-
-Software Engineering Graduate | Curtin University
-
-- [GitHub](https://github.com/reBinuk31)
-- [LinkedIn](https://linkedin.com/in/binukperera)
